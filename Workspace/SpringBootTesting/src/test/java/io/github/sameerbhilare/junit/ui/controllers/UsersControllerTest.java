@@ -27,6 +27,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+/**
+ * @WebMvcTest - It provides a test environment for the UsersController class by setting up a narrow Spring context focused on only the web layer (controllers layer).
+ *
+ * @WebMvcTest is used for testing a specific slice of the application (typically web layer),
+ * while @SpringBootTest loads the whole application context for more general tests.
+ */
 @WebMvcTest(controllers = {UsersController.class},
     excludeAutoConfiguration = {SecurityAutoConfiguration.class}
 )
@@ -108,8 +114,6 @@ public class UsersControllerTest {
                 mvcResult.getResponse().getStatus(),
                 "Incorrect HTTP Status Code returned");
     }
-
-
 
     @Test
     @DisplayName("First name cannot be shorter than 2 characters")
