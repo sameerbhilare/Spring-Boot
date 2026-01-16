@@ -107,7 +107,26 @@ public class UsersControllerTest {
         assertEquals(HttpStatus.BAD_REQUEST.value(),
                 mvcResult.getResponse().getStatus(),
                 "Incorrect HTTP Status Code returned");
+    }
 
 
+
+    @Test
+    @DisplayName("First name cannot be shorter than 2 characters")
+    void testCreateUser_whenFirstNameIsOnlyOneCharacter_returns400StatusCode() throws Exception {
+        // Arrange
+        userDetailsRequestModel.setFirstName("a");
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/users")
+                .content(new ObjectMapper().writeValueAsString(userDetailsRequestModel))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON);
+
+        // Act
+        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+
+        // Assert
+        assertEquals(HttpStatus.BAD_REQUEST.value(),
+                result.getResponse().getStatus(), "HTTP Status code is not set to 400");
     }
 }
