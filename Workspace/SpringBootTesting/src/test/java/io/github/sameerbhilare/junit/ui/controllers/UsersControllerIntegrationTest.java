@@ -1,10 +1,25 @@
 package io.github.sameerbhilare.junit.ui.controllers;
 
+import io.github.sameerbhilare.junit.ui.response.UserRest;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.TestPropertySource;
+
+import java.util.Arrays;
 
 
 // Option 5
@@ -31,9 +46,63 @@ public class UsersControllerIntegrationTest {
     @LocalServerPort    // actual port where application is running. Useful, specially in case of RANDOM_PORT
     private int localServerPort;
 
+    @Autowired
+    // If you are using the @SpringBootTest annotation with an embedded server,
+    // a TestRestTemplate and/or WebTestClient is automatically available and can be @Autowired into your test.
+    // we may inject RestTemplate, but it is safe to use TestRestTemplate in integration tests.
+    private TestRestTemplate testRestTemplate;
+
     @Test
     void contextLoaded() {
         System.out.println("server.port=" + serverPort);
         System.out.println("localServerPort=" + localServerPort);
+    }
+
+    @Test
+    @DisplayName("User can be created")
+    @Order(1)
+    void testCreateUser_whenValidDetailsProvided_returnsUserDetails() throws JSONException {
+        // Arrange
+//        String createUserJson = "{\n" +
+//                "    \"firstName\":\"Sameer\",\n" +
+//                "    \"lastName\":\"Bhilare\",\n" +
+//                "    \"email\":\"test3@test.com\",\n" +
+//                "    \"password\":\"12345678\",\n" +
+//                "    \"repeatPassword\":\"12345678\"\n" +
+//                "}";
+
+        JSONObject userDetailsRequestJson = new JSONObject();
+        userDetailsRequestJson.put("firstName", "Sameer");
+        userDetailsRequestJson.put("lastName", "Bhilare");
+        userDetailsRequestJson.put("email", "test@test.com");
+        userDetailsRequestJson.put("password","12345678");
+        userDetailsRequestJson.put("repeatPassword", "12345678");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+
+        HttpEntity<String> request = new HttpEntity<>(userDetailsRequestJson.toString(), headers);
+
+        // Act
+        ResponseEntity<UserRest> createdUserDetailsEntity = testRestTemplate.postForEntity("/users",
+                request,
+                UserRest.class);
+        // DB - HikariDataSource automatically configures H2 database. See test server logs and search for h2
+        UserRest createdUserDetails = createdUserDetailsEntity.getBody();
+
+        // Assert
+        Assertions.assertEquals(HttpStatus.OK, createdUserDetailsEntity.getStatusCode());
+        Assertions.assertEquals(userDetailsRequestJson.getString("firstName"),
+                createdUserDetails.getFirstName(),
+                "Returned user's first name seems to be incorrect");
+        Assertions.assertEquals(userDetailsRequestJson.getString("lastName"),
+                createdUserDetails.getLastName(),
+                "Returned user's last name seems to be incorrect");
+        Assertions.assertEquals(userDetailsRequestJson.getString("email"),
+                createdUserDetails.getEmail(),
+                "Returned user's email seems to be incorrect");
+        Assertions.assertFalse(createdUserDetails.getUserId().trim().isEmpty(),
+                "User id should not be empty");
     }
 }
