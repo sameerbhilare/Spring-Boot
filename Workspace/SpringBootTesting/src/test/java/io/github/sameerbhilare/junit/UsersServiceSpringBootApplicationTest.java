@@ -1,4 +1,4 @@
-package com.appsdeveloperblog.tutorials.junit;
+package io.github.sameerbhilare.junit;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
