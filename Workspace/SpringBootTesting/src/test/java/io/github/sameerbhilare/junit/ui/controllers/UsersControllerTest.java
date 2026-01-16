@@ -5,16 +5,19 @@ import io.github.sameerbhilare.junit.service.UsersService;
 import io.github.sameerbhilare.junit.shared.UserDto;
 import io.github.sameerbhilare.junit.ui.request.UserDetailsRequestModel;
 import io.github.sameerbhilare.junit.ui.response.UserRest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -41,17 +44,22 @@ public class UsersControllerTest {
     @MockitoBean // @MockBean is deprecated now.
     UsersService usersService;
 
+    private UserDetailsRequestModel userDetailsRequestModel;
+
+    @BeforeEach
+    void setup() {
+        userDetailsRequestModel = new UserDetailsRequestModel();
+        userDetailsRequestModel.setFirstName("Sameer");
+        userDetailsRequestModel.setLastName("Bhilare");
+        userDetailsRequestModel.setEmail("test@test.com");
+        userDetailsRequestModel.setPassword("12345678");
+    }
+
     @Test
     @DisplayName("User can be created")
     void testCreateUser_whenValidUserDetailsProvided_returnsCreateUserDetails() throws Exception {
 
         // Arrange
-        UserDetailsRequestModel userDetailsRequestModel = new UserDetailsRequestModel();
-        userDetailsRequestModel.setFirstName("Sameer");
-        userDetailsRequestModel.setLastName("Bhilare");
-        userDetailsRequestModel.setEmail("test@test.com");
-        userDetailsRequestModel.setPassword("12345678");
-
         UserDto userDto = new ModelMapper().map(userDetailsRequestModel, UserDto.class);
         userDto.setUserId(UUID.randomUUID().toString());
 
@@ -78,6 +86,28 @@ public class UsersControllerTest {
                 createdUser.getEmail(), "The returned user email is incorrect");
 
         assertFalse(createdUser.getUserId().isEmpty(), "userId should not be empty");
+
+    }
+
+    @Test
+    @DisplayName("First name is not empty")
+    void testCreateUser_whenFirstNameIsNotProvided_returns400StatusCode() throws Exception {
+        // Arrange
+        userDetailsRequestModel.setFirstName("");
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(userDetailsRequestModel));
+
+        // Act
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+
+        // Assert
+        assertEquals(HttpStatus.BAD_REQUEST.value(),
+                mvcResult.getResponse().getStatus(),
+                "Incorrect HTTP Status Code returned");
+
 
     }
 }
