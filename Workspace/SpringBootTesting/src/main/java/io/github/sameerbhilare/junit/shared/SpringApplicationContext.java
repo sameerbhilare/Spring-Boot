@@ -1,4 +1,4 @@
-package com.appsdeveloperblog.tutorials.junit.shared;
+package io.github.sameerbhilare.junit.shared;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;

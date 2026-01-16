@@ -1,6 +1,6 @@
-package com.appsdeveloperblog.tutorials.junit.security;
+package io.github.sameerbhilare.junit.security;
 
-import com.appsdeveloperblog.tutorials.junit.io.UsersRepository;
+import io.github.sameerbhilare.junit.io.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

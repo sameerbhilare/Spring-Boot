@@ -1,4 +1,4 @@
-package com.appsdeveloperblog.tutorials.junit.ui.request;
+package io.github.sameerbhilare.junit.ui.request;
 
 public class UserLoginRequestModel {
     private String email;

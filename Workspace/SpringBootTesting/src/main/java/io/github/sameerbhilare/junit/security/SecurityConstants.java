@@ -1,4 +1,4 @@
-package com.appsdeveloperblog.tutorials.junit.security;
+package io.github.sameerbhilare.junit.security;
 
 public class SecurityConstants {
     public static final String TOKEN_PREFIX = "Bearer ";

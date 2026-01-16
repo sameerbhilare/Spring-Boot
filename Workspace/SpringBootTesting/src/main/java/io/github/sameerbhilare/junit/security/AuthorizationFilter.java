@@ -1,6 +1,6 @@
-package com.appsdeveloperblog.tutorials.junit.security;
+package io.github.sameerbhilare.junit.security;
 
-import com.appsdeveloperblog.tutorials.junit.io.UsersRepository;
+import io.github.sameerbhilare.junit.io.UsersRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;

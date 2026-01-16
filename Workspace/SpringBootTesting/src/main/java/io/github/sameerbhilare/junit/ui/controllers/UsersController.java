@@ -1,9 +1,9 @@
-package com.appsdeveloperblog.tutorials.junit.ui.controllers;
+package io.github.sameerbhilare.junit.ui.controllers;
 
-import com.appsdeveloperblog.tutorials.junit.service.UsersService;
-import com.appsdeveloperblog.tutorials.junit.shared.UserDto;
-import com.appsdeveloperblog.tutorials.junit.ui.request.UserDetailsRequestModel;
-import com.appsdeveloperblog.tutorials.junit.ui.response.UserRest;
+import io.github.sameerbhilare.junit.service.UsersService;
+import io.github.sameerbhilare.junit.shared.UserDto;
+import io.github.sameerbhilare.junit.ui.request.UserDetailsRequestModel;
+import io.github.sameerbhilare.junit.ui.response.UserRest;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;

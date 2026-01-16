@@ -1,6 +1,6 @@
-package com.appsdeveloperblog.tutorials.junit.service;
+package io.github.sameerbhilare.junit.service;
 
-import com.appsdeveloperblog.tutorials.junit.shared.UserDto;
+import io.github.sameerbhilare.junit.shared.UserDto;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;

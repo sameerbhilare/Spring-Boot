@@ -1,14 +1,13 @@
-package com.appsdeveloperblog.tutorials.junit.service;
+package io.github.sameerbhilare.junit.service;
 
-import com.appsdeveloperblog.tutorials.junit.exceptions.UsersServiceException;
-import com.appsdeveloperblog.tutorials.junit.io.UserEntity;
-import com.appsdeveloperblog.tutorials.junit.io.UsersRepository;
-import com.appsdeveloperblog.tutorials.junit.shared.UserDto;
+import io.github.sameerbhilare.junit.exceptions.UsersServiceException;
+import io.github.sameerbhilare.junit.io.UserEntity;
+import io.github.sameerbhilare.junit.io.UsersRepository;
+import io.github.sameerbhilare.junit.shared.UserDto;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

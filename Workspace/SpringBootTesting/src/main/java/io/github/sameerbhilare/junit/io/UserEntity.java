@@ -1,4 +1,4 @@
-package com.appsdeveloperblog.tutorials.junit.io;
+package io.github.sameerbhilare.junit.io;
 
 import jakarta.persistence.*;
 import java.io.Serializable;

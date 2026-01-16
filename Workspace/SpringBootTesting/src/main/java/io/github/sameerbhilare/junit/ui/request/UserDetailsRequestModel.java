@@ -1,4 +1,4 @@
-package com.appsdeveloperblog.tutorials.junit.ui.request;
+package io.github.sameerbhilare.junit.ui.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;

@@ -1,6 +1,6 @@
-package com.appsdeveloperblog.tutorials.junit;
+package io.github.sameerbhilare.junit;
 
-import com.appsdeveloperblog.tutorials.junit.shared.SpringApplicationContext;
+import io.github.sameerbhilare.junit.shared.SpringApplicationContext;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;

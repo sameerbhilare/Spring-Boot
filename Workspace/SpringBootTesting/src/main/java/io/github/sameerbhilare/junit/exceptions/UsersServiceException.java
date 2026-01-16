@@ -1,4 +1,4 @@
-package com.appsdeveloperblog.tutorials.junit.exceptions;
+package io.github.sameerbhilare.junit.exceptions;
 
 public class UsersServiceException extends RuntimeException{
     public UsersServiceException(String message)

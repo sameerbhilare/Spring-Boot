@@ -1,4 +1,4 @@
-package com.appsdeveloperblog.tutorials.junit.io;
+package io.github.sameerbhilare.junit.io;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

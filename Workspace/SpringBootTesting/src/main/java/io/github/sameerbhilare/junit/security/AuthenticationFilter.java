@@ -1,11 +1,10 @@
-package com.appsdeveloperblog.tutorials.junit.security;
+package io.github.sameerbhilare.junit.security;
 
-import com.appsdeveloperblog.tutorials.junit.service.UsersService;
-import com.appsdeveloperblog.tutorials.junit.shared.SpringApplicationContext;
-import com.appsdeveloperblog.tutorials.junit.shared.UserDto;
+import io.github.sameerbhilare.junit.service.UsersService;
+import io.github.sameerbhilare.junit.shared.SpringApplicationContext;
+import io.github.sameerbhilare.junit.shared.UserDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
