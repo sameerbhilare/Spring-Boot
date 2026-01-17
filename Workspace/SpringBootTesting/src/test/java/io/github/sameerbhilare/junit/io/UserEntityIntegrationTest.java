@@ -1,5 +1,6 @@
 package io.github.sameerbhilare.junit.io;
 
+import jakarta.persistence.PersistenceException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -41,5 +42,17 @@ public class UserEntityIntegrationTest {
         Assertions.assertEquals(userEntity.getLastName(), storedUserEntity.getLastName());
         Assertions.assertEquals(userEntity.getEmail(), storedUserEntity.getEmail());
         Assertions.assertEquals(userEntity.getEncryptedPassword(), storedUserEntity.getEncryptedPassword());
+    }
+
+    @Test
+    @DisplayName("Store invalid User with firstname longer than expected length in database")
+    void testUserEntity_whenFirstNameIsTooLong_shouldThrowException() {
+        // Arrange
+        userEntity.setFirstName("123456789012345678901234567890123456789012345678901234567890");
+
+        // Assert & Act
+        Assertions.assertThrows(PersistenceException.class, () -> {
+            testEntityManager.persistAndFlush(userEntity);
+        }, "Was expecting a PersistenceException to be thrown.");
     }
 }
