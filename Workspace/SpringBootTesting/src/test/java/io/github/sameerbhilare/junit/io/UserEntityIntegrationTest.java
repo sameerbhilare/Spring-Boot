@@ -11,6 +11,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 @DataJpaTest // enables auto-configuration only that is relevant to Data JPA tests. e.g. Entities, Repositories
 public class UserEntityIntegrationTest {
 
@@ -51,8 +53,30 @@ public class UserEntityIntegrationTest {
         userEntity.setFirstName("123456789012345678901234567890123456789012345678901234567890");
 
         // Assert & Act
-        Assertions.assertThrows(PersistenceException.class, () -> {
+        assertThrows(PersistenceException.class, () -> {
             testEntityManager.persistAndFlush(userEntity);
         }, "Was expecting a PersistenceException to be thrown.");
+    }
+
+    @Test
+    @DisplayName("Store invalid User with userId same as existing userId in database")
+    void testUserEntity_whenExistingUserIdProvided_shouldThrowException() {
+        // Arrange
+        // Create and Persist a new User Entity
+        UserEntity newEntity = new UserEntity();
+        newEntity.setUserId("1");
+        newEntity.setEmail("test2@test.com");
+        newEntity.setFirstName("test");
+        newEntity.setLastName("test");
+        newEntity.setEncryptedPassword("test");
+        testEntityManager.persistAndFlush(newEntity);
+
+        // Update existing user entity with the same user id
+        userEntity.setUserId("1");
+
+        // Act & Assert
+        assertThrows(PersistenceException.class, ()-> {
+            testEntityManager.persistAndFlush(userEntity);
+        }, "Expected PersistenceException to be thrown here");
     }
 }
