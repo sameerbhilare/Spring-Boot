@@ -1,12 +1,15 @@
 package io.github.sameerbhilare.junit.ui.controllers;
 
+import io.github.sameerbhilare.junit.security.SecurityConstants;
 import io.github.sameerbhilare.junit.ui.response.UserRest;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -41,6 +44,8 @@ import java.util.List;
 
 // Option 1
 //@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)  // Default. This is similar to @WebMvcTest
+
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UsersControllerIntegrationTest {
 
     @Value("${server.port}") // reads value of property server.port
@@ -54,6 +59,8 @@ public class UsersControllerIntegrationTest {
     // a TestRestTemplate and/or WebTestClient is automatically available and can be @Autowired into your test.
     // we may inject RestTemplate, but it is safe to use TestRestTemplate in integration tests.
     private TestRestTemplate testRestTemplate;
+
+    private String authorizationToken;
 
     @Test
     void contextLoaded() {
@@ -129,5 +136,38 @@ public class UsersControllerIntegrationTest {
         // Assert
         Assertions.assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode(),
                 "HTTP Status code 403 Forbidden should have been returned");
+    }
+
+    @Test
+    @DisplayName("/login works")
+    @Order(3)
+    void testUserLogin_whenValidCredentialsProvided_returnsJWTinAuthorizationHeader() throws JSONException {
+        // Arrange
+//        String loginCredentialsJson = "{\n" +
+//                "    \"email\":\"test3@test.com\",\n" +
+//                "    \"password\":\"12345678\"\n" +
+//                "}";
+        JSONObject loginCredentials = new JSONObject();
+        loginCredentials.put("email","test@test.com");
+        loginCredentials.put("password","12345678");
+
+        HttpEntity<String> request = new HttpEntity<>(loginCredentials.toString());
+
+        // Act
+        ResponseEntity response = testRestTemplate.postForEntity("/users/login",
+                request,
+                null);
+
+        authorizationToken = response.getHeaders().
+                getValuesAsList(SecurityConstants.HEADER_STRING).get(0);
+
+        // Assert
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode(),
+                "HTTP Status code should be 200");
+        Assertions.assertNotNull(authorizationToken,
+                "Response should contain Authorization header with JWT");
+        Assertions.assertNotNull(response.getHeaders().
+                        getValuesAsList("UserID").get(0),
+                "Response should contain UserID in a response header");
     }
 }
