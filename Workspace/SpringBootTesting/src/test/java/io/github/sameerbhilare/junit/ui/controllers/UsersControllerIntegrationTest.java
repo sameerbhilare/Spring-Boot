@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,7 +46,8 @@ import java.util.List;
 // Option 1
 //@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)  // Default. This is similar to @WebMvcTest
 
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class) // we need to ensure the order of execution of tests because login should happen once user is created.
+@TestInstance(TestInstance.Lifecycle.PER_CLASS) // required because we need JWT from one test method in another test method
 public class UsersControllerIntegrationTest {
 
     @Value("${server.port}") // reads value of property server.port
@@ -169,5 +171,29 @@ public class UsersControllerIntegrationTest {
         Assertions.assertNotNull(response.getHeaders().
                         getValuesAsList("UserID").get(0),
                 "Response should contain UserID in a response header");
+    }
+
+    @Test
+    @Order(4)
+    @DisplayName("GET /users works")
+    void testGetUsers_whenValidJWTProvided_returnsUsers() {
+        // Arrange
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.setBearerAuth(authorizationToken);
+
+        HttpEntity requestEntity = new HttpEntity(headers);
+
+        // Act
+        ResponseEntity<List<UserRest>> response = testRestTemplate.exchange("/users",
+                HttpMethod.GET,
+                requestEntity,
+                new ParameterizedTypeReference<List<UserRest>>() {
+                });
+
+        // Assert
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode(),
+                "HTTP Status code should be 200");
+        Assertions.assertEquals(1, response.getBody().size(), "There should be exactly 1 user in the list"); // bcz only one user is created
     }
 }
