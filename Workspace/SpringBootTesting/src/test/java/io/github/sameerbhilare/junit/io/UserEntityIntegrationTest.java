@@ -13,7 +13,14 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DataJpaTest // enables auto-configuration only that is relevant to Data JPA tests. e.g. Entities, Repositories
+/**
+ * @DataJpaTest - enables auto-configuration only that is relevant to Data JPA tests. e.g. Entities, Repositories.
+ *
+ * @DataJpaTest annotation is transactional by default.
+ * It wraps each test method with a transaction and rolls back the transaction at the end of the test.
+ * This behavior ensures that any changes made to the database during the test do not affect the actual data and helps to maintain data integrity.
+ */
+@DataJpaTest
 public class UserEntityIntegrationTest {
 
     @Autowired
