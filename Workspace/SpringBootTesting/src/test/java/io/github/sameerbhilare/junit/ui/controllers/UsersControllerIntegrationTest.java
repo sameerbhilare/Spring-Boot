@@ -31,6 +31,7 @@ import java.util.List;
 
 // Option 5
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT) // start at random port irrespective of defined server.port. Internally sets server.port=0
+// Random port also avoids port conflicts when running multiple tests simultaneously
 
 // Option 4
 //@SpringBootTest
@@ -56,6 +57,9 @@ public class UsersControllerIntegrationTest {
     @LocalServerPort    // actual port where application is running. Useful, specially in case of RANDOM_PORT
     private int localServerPort;
 
+    @Value("${local.server.port}") // actual port where application is running. Useful, specially in case of RANDOM_PORT
+    private int localServerPortProp;
+
     @Autowired
     // If you are using the @SpringBootTest annotation with an embedded server,
     // a TestRestTemplate and/or WebTestClient is automatically available and can be @Autowired into your test.
@@ -68,6 +72,7 @@ public class UsersControllerIntegrationTest {
     void contextLoaded() {
         System.out.println("server.port=" + serverPort);
         System.out.println("localServerPort=" + localServerPort);
+        System.out.println("local.server.port=" + localServerPortProp);
     }
 
     @Test
