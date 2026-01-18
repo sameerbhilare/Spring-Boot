@@ -153,12 +153,10 @@ public class UsersControllerITest {
                 .extract()
                 .response();
          */
-
     }
 
-
     @Test
-    @Order(3)
+    @Order(2)
     @DisplayName("POST /login - Login User")
     void testLogin_whenValidCredentialsProvided_returnsTokenAndUserIdHeaders() {
         // Arrange
@@ -183,5 +181,23 @@ public class UsersControllerITest {
         assertNotNull(token);
     }
 
+
+    @Test
+    @Order(3)
+    @DisplayName("GET /users/{userId} - Get user details")
+    void testGetUser_withValidAuthenticationToken_returnsUser() {
+        given() // Arrange
+                .pathParam("userId",this.userId)
+                .header("Authorization", "Bearer " + this.token)
+                //.auth().oauth2(this.token)
+        .when() // Act
+                .get("/users/{userId}")
+        .then() // Assert
+                .statusCode(HttpStatus.OK.value())
+                .body("id",equalTo(this.userId))
+                .body("email",equalTo(TEST_EMAIL))
+                .body("firstName", notNullValue())
+                .body("lastName", notNullValue());
+    }
 
 }
