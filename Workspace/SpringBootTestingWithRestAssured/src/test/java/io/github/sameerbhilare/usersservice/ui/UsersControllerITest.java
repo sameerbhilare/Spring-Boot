@@ -184,7 +184,7 @@ public class UsersControllerITest {
 
     @Test
     @Order(3)
-    @DisplayName("GET /users/{userId} - Get user details")
+    @DisplayName("GET /users/{userId} - Get user details with auth token")
     void testGetUser_withValidAuthenticationToken_returnsUser() {
         given() // Arrange
                 .pathParam("userId",this.userId)
@@ -198,6 +198,19 @@ public class UsersControllerITest {
                 .body("email",equalTo(TEST_EMAIL))
                 .body("firstName", notNullValue())
                 .body("lastName", notNullValue());
+    }
+
+
+    @Test
+    @Order(4)
+    @DisplayName("GET /users/{userId} - Get user details without auth token")
+    void testGetUser_withMissingAuthHeader_returnsForbidden() {
+        given()
+                .pathParam("userId", this.userId)
+        .when()
+                .get("/users/{userId}")
+        .then()
+                .statusCode(HttpStatus.FORBIDDEN.value());
     }
 
 }
