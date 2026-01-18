@@ -8,14 +8,21 @@ import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.anyOf;
@@ -23,6 +30,8 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThan;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -34,6 +43,9 @@ public class UsersControllerITest {
 
     @LocalServerPort
     private int port;
+
+    private String userId;
+    private String token;
 
     // log all data related to HTTP "Request"
     private final RequestLoggingFilter requestLoggingFilter = new RequestLoggingFilter();
@@ -76,6 +88,8 @@ public class UsersControllerITest {
     }
 
     @Test
+    @Order(1)
+    @DisplayName("POST /users - Create User")
     void testCreateUser_whenValidDetailsProvided_returnsCreatedUser() {
 
         // Arrange
@@ -141,5 +155,33 @@ public class UsersControllerITest {
          */
 
     }
+
+
+    @Test
+    @Order(3)
+    @DisplayName("POST /login - Login User")
+    void testLogin_whenValidCredentialsProvided_returnsTokenAndUserIdHeaders() {
+        // Arrange
+        Map<String, String> credentials = new HashMap<>();
+        credentials.put("email", TEST_EMAIL);
+        credentials.put("password", TEST_PASSWORD);
+
+        // Act
+        // Using WAY 3 as we need to store userId and token
+        Response response =
+                given()
+                    .body(credentials)
+                .when()
+                    .post("/login"); // /login provided by spring security
+
+        this.userId = response.header("userId");
+        this.token = response.header("token");
+
+        // Assert
+        assertEquals(HttpStatus.OK.value(), response.statusCode());
+        assertNotNull(userId);
+        assertNotNull(token);
+    }
+
 
 }
