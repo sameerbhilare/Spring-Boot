@@ -189,7 +189,7 @@ public class UsersControllerITest {
         given() // Arrange
                 .pathParam("userId",this.userId)
                 .header("Authorization", "Bearer " + this.token)
-                //.auth().oauth2(this.token)
+                //.auth().oauth2(this.token)    // same as above line. only diff is in this case token will not be logged.
         .when() // Act
                 .get("/users/{userId}")
         .then() // Assert
@@ -213,4 +213,20 @@ public class UsersControllerITest {
                 .statusCode(HttpStatus.FORBIDDEN.value());
     }
 
+
+    @Test
+    @Order(5)
+    @DisplayName("GET /users - Get all users with auth token")
+    void testGetUsers_withValidTokenAndQueryParams_returnsPaginatedUsersList() {
+        given()
+                //.header("Authorization", "Bearer " + this.token)
+                .auth().oauth2(this.token)    // same as above line. only diff is in this case token will not be logged.
+                .queryParam("page", 1)
+                .queryParam("limit", 10)
+        .when()
+                .get("/users")
+        .then()
+                .statusCode(HttpStatus.OK.value())
+                .body("size()", equalTo(1));
+    }
 }
